@@ -11,7 +11,7 @@ from measurement_model import Hawaii_Measurement
 measurement_engine = create_engine("sqlite:///hawaii.sqlite")
 measurement_session = Session(bind=measurement_engine)
 
-measurement_data = measurement_session.query(Hawaii_Measurement).limit(10).all()
+measurement_data = measurement_session.query(Hawaii_Measurement)
 # for row in measurement_data:
 #     pprint(row.__dict__)
 
@@ -23,7 +23,7 @@ from station_model import Hawaii_Station
 station_engine = create_engine("sqlite:///hawaii.sqlite")
 station_session = Session(bind=station_engine)
 
-station_data = station_session.query(Hawaii_Station).limit(10).all()
+station_data = station_session.query(Hawaii_Station)
 # for row in station_data:
 #     pprint(row.__dict__)
 
@@ -42,6 +42,7 @@ max_df = pd.read_sql("SELECT max(date) FROM measurement", conn_m)
 
 # Get pertinent data
 measurement_df1 = pd.read_sql("SELECT date, prcp FROM measurement WHERE date between '2015-07-01' and '2016-07-01'", conn_m)
+# print(measurement_df1)
 # print(measurement_df1.head())
 
 # Data Cleaning: set index, sort, drop NULLs
@@ -52,7 +53,25 @@ measurement_df2 = measurement_df1.sort_values(by = 'date').dropna(how = 'any') #
 measurement_plot = measurement_df2.plot(x = 'date', y = 'prcp', kind = 'bar')
 # measurement_plot.show
 
+# Summary Statistics
+# print(measurement_df2.describe())
 
 
 
-git stat
+
+# Station Analysis
+
+conn_s = station_engine.connect()
+station_df1 = pd.read_sql("SELECT * FROM station",conn_s)
+# print(station_df1)
+# print(station_df1.head())
+
+# Calculate the total number of stations
+station_count = station_df1["station"].count()
+# print(station_count)
+
+# The most active stations
+
+# Join the data together
+joined_df = measurement_df2.join(station_df1, on = "station", how = "left")
+print(joined_df.head())
