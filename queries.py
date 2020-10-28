@@ -83,7 +83,9 @@ all_df = pd.merge(measurement_df1, station_df1, on = "station", how = "left")
 # print(all_df.head())
 
 # List of stations and observation counts in descending order
-print(all_df.count())
+# print(all_df.count())
 
-
+station_q = station_session.query(Hawaii_Station)
+station_q1 = station_session.query(func.min(Hawaii_Station.longitude))
+pprint(station_q1.all())
 
